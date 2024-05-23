@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { create } from '../lib/openai';
 import { Box, Flex, Input, useToast } from '@chakra-ui/react';
 
 const Index = () => {
@@ -9,16 +10,41 @@ const Index = () => {
     setInputValue(e.target.value);
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = async (e) => {
     if (e.key === 'Enter') {
-      toast({
-        title: 'Input submitted.',
-        description: `You entered: ${inputValue}`,
-        status: 'info',
-        duration: 3000,
-        isClosable: true,
-      });
-      setInputValue('');
+      try {
+        const response = await create({
+          messages: [{ role: 'user', content: inputValue }],
+          model: 'gpt-4'
+        });
+
+        const generatedContent = response.choices[0].message.content;
+
+        const iframe = document.querySelector('iframe');
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+        iframeDocument.open();
+        iframeDocument.write(generatedContent);
+        iframeDocument.close();
+
+        toast({
+          title: 'Content generated.',
+          description: 'The content has been generated and rendered in the iframe.',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+
+        setInputValue('');
+      } catch (error) {
+        console.error('Error generating content:', error);
+        toast({
+          title: 'Error.',
+          description: 'There was an error generating the content.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      }
     }
   };
 
