@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Flex, Input, useToast } from '@chakra-ui/react';
 import { create } from '../../lib/openai';
 
@@ -23,7 +23,10 @@ const Index = () => {
 
       try {
         const response = await create({
-          messages: [{ role: 'user', content: inputValue }],
+          messages: [
+            { role: 'system', content: 'You are a helpful assistant. Generate JS and HTML that fully works.' },
+            { role: 'user', content: inputValue }
+          ],
           model: 'gpt-4',
         });
 
