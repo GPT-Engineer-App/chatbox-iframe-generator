@@ -28,7 +28,9 @@ const Index = () => {
         });
 
         const generatedContent = response.choices[0].message.content;
-        setIframeContent(generatedContent);
+        const codeBlockMatch = generatedContent.match(/```([^`]+)```/);
+        const codeContent = codeBlockMatch ? codeBlockMatch[1].trim() : 'No code block found.';
+        setIframeContent(codeContent);
       } catch (error) {
         console.error('Error generating content:', error);
         toast({
