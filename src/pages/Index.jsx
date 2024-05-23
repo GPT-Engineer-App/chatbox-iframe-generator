@@ -24,14 +24,20 @@ const Index = () => {
       try {
         const response = await create({
           messages: [
-            { role: 'system', content: 'You are a helpful assistant. Generate JS and HTML that fully works.' },
+            { role: 'system', content: 'Generate JS and HTML that fully works.' },
             { role: 'user', content: inputValue }
           ],
           model: 'gpt-4',
         });
 
         const generatedContent = response.choices[0].message.content;
-        setIframeContent(generatedContent);
+        const codeMatch = generatedContent.match(/```(?:javascript|html)?\n([\s\S]*?)```/);
+
+        if (codeMatch) {
+          setIframeContent(codeMatch[1]);
+        } else {
+          setIframeContent('No valid code block found in the response.');
+        }
       } catch (error) {
         console.error('Error generating content:', error);
         toast({
