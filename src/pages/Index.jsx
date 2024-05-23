@@ -31,7 +31,12 @@ const Index = () => {
         });
 
         const generatedContent = response.choices[0].message.content;
-        setIframeContent(generatedContent);
+
+        // Extract content within ``` blocks
+        const codeBlockMatch = generatedContent.match(/```(?:\w*\n)?([\s\S]*?)```/);
+        const codeBlockContent = codeBlockMatch ? codeBlockMatch[1] : 'No valid code block found.';
+
+        setIframeContent(codeBlockContent);
       } catch (error) {
         console.error('Error generating content:', error);
         toast({
