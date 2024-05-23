@@ -45,16 +45,17 @@ const Index = () => {
   };
 
   return (
-    <Flex height="100vh">
-      <Box width="25%" p={4} borderRight="1px solid #ccc">
+    <Flex height="100vh" direction={{ base: 'column', md: 'row' }}>
+      <Box width={{ base: '100%', md: '25%' }} p={4} borderRight={{ base: 'none', md: '1px solid #ccc' }}>
         <Input
           placeholder="Type your message here..."
           value={inputValue}
           onChange={handleInputChange}
           onKeyPress={handleKeyPress}
+          height="200px"
         />
       </Box>
-      <Box width="75%" p={4}>
+      <Box width={{ base: '100%', md: '75%' }} p={4}>
         <iframe
           title="Output"
           style={{ width: '100%', height: '100%', border: 'none' }}
