@@ -31,10 +31,26 @@ const Index = () => {
         });
 
         const generatedContent = response.choices[0].message.content;
-        const codeMatch = generatedContent.match(/```(?:javascript|html)?\n([\s\S]*?)```/);
+        // Extract code blocks using native JavaScript methods
+        const codeBlocks = [];
+        const lines = generatedContent.split('\n');
+        let isCodeBlock = false;
+        let codeBlock = '';
 
-        if (codeMatch) {
-          setIframeContent(codeMatch[1]);
+        lines.forEach(line => {
+          if (line.startsWith('```')) {
+            if (isCodeBlock) {
+              codeBlocks.push(codeBlock);
+              codeBlock = '';
+            }
+            isCodeBlock = !isCodeBlock;
+          } else if (isCodeBlock) {
+            codeBlock += `${line}\n`;
+          }
+        });
+
+        if (codeBlocks.length > 0) {
+          setIframeContent(codeBlocks[0]);
         } else {
           setIframeContent('No valid code block found in the response.');
         }
