@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Flex, Input, useToast } from '@chakra-ui/react';
+import { marked } from 'marked';
 import { create } from '../../lib/openai';
 
 const Index = () => {
@@ -28,7 +29,19 @@ const Index = () => {
         });
 
         const generatedContent = response.choices[0].message.content;
-        setIframeContent(generatedContent);
+
+        // Extract code within ``` blocks
+        const codeBlocks = [];
+        const regex = /```(?:\w+)?\n([\s\S]*?)```/g;
+        let match;
+        while ((match = regex.exec(generatedContent)) !== null) {
+          codeBlocks.push(match[1]);
+        }
+
+        // Combine all code blocks into a single string
+        const combinedCode = codeBlocks.join('\n');
+
+        setIframeContent(combinedCode);
       } catch (error) {
         console.error('Error generating content:', error);
         toast({
